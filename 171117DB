@@ -1,0 +1,94 @@
+use MagicCorp
+
+select ename
+from EMPLOYEE
+
+select *
+from DEPARTMENT
+
+insert into DEPARTMENT values(50,'토목부','일산')
+
+insert into DEPARTMENT(dno,DNAME,loc) values(80,'문자널','null')
+
+insert into emp_kk
+select *
+from EMPLOYEE
+where job = '사원'
+
+select * into emp_kk --테이블을 값들과 함께 복사
+from EMPLOYEE
+
+select * into emp_kk2 --where 문은 레코드 단위로 검사한다. 레코드가 넘어갈 때마다 조건을 검사한다.
+from EMPLOYEE
+where 1 = 0
+
+select * into employee01
+from EMPLOYEE
+
+select *
+from employee01
+
+update employee01
+set job = '대표'
+
+update employee01
+set MANAGER = '1007'
+where MANAGER = '1008'
+
+update employee01
+set SALARY = salary + salary * 0.1
+
+--사원들만 메니져 번호를 1000
+update employee01
+set manager = 1000
+where job = '사원'
+
+--이문세랑 같은 부서 사람들만 월급 10프로인상
+update employee01
+set salary = salary + salary * 0.1
+where dno = (select dno from employee01 where ename = '이문세')
+
+delete from employee01
+where manager = 1000
+
+select * from DEPARTMENT
+select * from employee01
+
+DELETE FROM employee01
+WHERE DNO = (SELECT DNO FROM DEPARTMENT WHERE DNAME = '영업부')
+
+--각 부서의 평균 월급보다 많이 받는사람
+
+select E1.dno,E1.ename,E1.salary
+from EMPLOYEE E1,EMPLOYEE E2
+where E1.salary > avg(E2.salary)
+
+create table customer(
+	id varchar(20),
+	pwd varchar(20),
+	name varchar(20),
+	phone1 varchar(3),
+	phone2 varchar(8),
+	birthYear int,
+	address varchar(100)
+)
+select *
+from customer
+
+insert into customer
+values (Null,Null,Null,'010','77777777',1988,'부산시 동래구')
+
+create table cust_01(
+	id varchar(20) not null,
+	pwd varchar(20) not null,
+	name varchar(20) not null,
+	phone1 varchar(3) null,
+	phone2 varchar(8) null,
+	birthYear int null,
+	address varchar(100) null
+)
+
+insert into cust_01
+values ('dddd','1234','홍길동','010','77777777',1988,'부산시 동래구')
+
+select * from cust_01
