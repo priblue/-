@@ -56,7 +56,7 @@ INSERT INTO order_state VALUES(0,'정상주문');
 INSERT INTO order_state VALUES(1,'예약');
 INSERT INTO order_state VALUES(2,'취소');
 
-INSERT INTO cust_order VALUES(0,0,0,0,1,'부산시 금정구 남산동 116-3 1층');
+INSERT INTO cust_order VALUES(0,0,0,0,1,'부산시 금정');
 
 select * from food_list
 select * from serve_method
