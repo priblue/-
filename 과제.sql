@@ -6,37 +6,35 @@ USE Chicken
 GO
 
 create table food_list(--매장에서 판매하고 있는 요리에 관한 테이블
-	food_id INT PRIMARY KEY,
-	food_name varchar(10) not null,
-	food_price varchar(10) not null,
+	food_id INT CONSTRAINT PK_food_id PRIMARY KEY,
+	food_name varchar(10),
+	food_price varchar(10)
 );
 
 create table serve_method( --요리 제공 방법에 대한 테이블
-	SMid INT PRIMARY KEY,
+	SMid INT CONSTRAINT PK_SMid PRIMARY KEY,
 	method varchar(10)
 );
 
 create table payment_method(--결제 방법에 대한 테이블
-	PMid INT PRIMARY KEY,
+	PMid INT CONSTRAINT PK_PMid PRIMARY KEY,
 	method varchar(10)
 );
 
 create table order_state(
-	OSid INT PRIMARY KEY,
-	order_state varchar(10),--예약,취소,
+	OSid INT CONSTRAINT PK_OSid PRIMARY KEY,
+	order_state varchar(10)--예약,취소,
 );
 
 create table cust_order(--손님 주문에 관한 테이블
-	food_id INT REFERENCES food_list(food_id),--주문한 음식 코드
-	order_num INT PRIMARY KEY,--주문번호. 입력된 순서대로 번호를 지정해주어야함. 0 1 2...이 코드로 손님들을 식별함.
-	PMid INT REFERENCES payment_method(PMid),
-	OSid INT REFERENCES order_state(OSid),
-	SMid INT REFERENCES serve_method(SMid),
-	order_address varchar(20)
+	food_id INT CONSTRAINT FK_food_id REFERENCES food_list(food_id),--주문한 음식 코드
+	order_num INT CONSTRAINT PK_order_num PRIMARY KEY IDENTITY(1,1),--주문번호. 입력된 순서대로 번호를 지정해주어야함. 0 1 2...이 코드로 손님들을 식별함.
+	order_date DATETIME,
+	PMid INT CONSTRAINT FK_PMid REFERENCES payment_method(PMid),
+	OSid INT CONSTRAINT FK_OSid REFERENCES order_state(OSid),
+	SMid INT CONSTRAINT FK_SMid REFERENCES serve_method(SMid),
+	order_address varchar(50)
 );
-
-ALTER TABLE cust_order
-alter column order_address varchar(50)
 
 INSERT INTO food_list VALUES(0,'후라이드',9000);
 INSERT INTO food_list VALUES(1,'양념치킨',9500);
@@ -56,20 +54,24 @@ INSERT INTO order_state VALUES(0,'정상주문');
 INSERT INTO order_state VALUES(1,'예약');
 INSERT INTO order_state VALUES(2,'취소');
 
-INSERT INTO cust_order VALUES(0,0,0,0,1,'부산시 금정');
+INSERT INTO cust_order VALUES(2,'2017/01/23',1,1,1,NULL); 
+INSERT INTO cust_order VALUES(0,'2017/01/23',0,0,2,'부산시 금정구');
+INSERT INTO cust_order VALUES(4,'2017/01/23',2,1,1,NULL);
+INSERT INTO cust_order VALUES(3,'2017/01/24',1,0,0,NULL);
+INSERT INTO cust_order VALUES(1,'2017/01/24',0,0,0,NULL);
+INSERT INTO cust_order VALUES(4,'2017/01/24',1,0,2,'부산시 동래구');
+INSERT INTO cust_order VALUES(2,'2017/01/25',2,0,0,NULL);
+INSERT INTO cust_order VALUES(1,'2017/01/25',1,1,2,'부산시 ');
+INSERT INTO cust_order VALUES(0,'2017/01/25',1,0,0,NULL);
+INSERT INTO cust_order VALUES(4,'2017/01/26',0,0,1,NULL);
+INSERT INTO cust_order VALUES(0,'2017/01/26',1,0,0,NULL);
+INSERT INTO cust_order VALUES(2,'2017/01/26',2,0,1,NULL);
+INSERT INTO cust_order VALUES(1,'2017/01/27',1,0,0,'부산시 ');
+INSERT INTO cust_order VALUES(3,'2017/01/27',2,1,2,'부산시 ');
+INSERT INTO cust_order VALUES(3,'2017/01/28',1,0,0,NULL);
+INSERT INTO cust_order VALUES(0,'2017/01/28',0,0,1,NULL);
 
 select * from food_list
 select * from serve_method
 select * from payment_method
 select * from cust_order
-
---손님에게 영수증을 끊어줘 보자.
-select food_list.food_name,food_list.food_price,payment_method.method
-from food_list,cust_order,serve_method,payment_method,order_state
-where cust_order.food_id = food_list.food_id and cust_order.PMid = payment_method.PMid
---위 쿼리문은 틀린 쿼리문
-
-select food.food_name,food.food_price,pay.method,serve.method
-from food_list food, payment_method pay, cust_order cust,serve_method serve
-where cust.PMid = pay.PMid and cust.food_id = food.food_id and cust.SMid = serve.SMid
---요렇게 하면 원하는대로 작동함. 이 손님은 후라이드 한마리를 카드로 긁고 포장해서 가심..
