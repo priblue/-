@@ -27,5 +27,9 @@ from cust_order cust inner join food_list food on cust.food_id = food.food_id
 group by food.food_price, food.food_name, cust.food_id
 order by 총매출 desc
 
---
+--26일날 매장에서 식사를 하고 간 사람의 수와 그 사람들이 쓰고 간 총액을 구하시오
+select count(cust.order_num),sum(food.food_price)
+from cust_order cust INNER JOIN food_list food ON cust.food_id = food.food_id
+					INNER JOIN serve_method ON cust.SMid = serve_method.SMid
+where cust.order_date = '2017/01/26' and serve_method.method = '매장식사'
 
